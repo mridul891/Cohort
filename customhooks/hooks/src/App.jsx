@@ -27,16 +27,48 @@ function useTodo(n) {
   return { todos, loading };
 }
 
+function useIsOnline() {
+  const [online, setOnline] = useState(window.navigator.onLine);
+
+  useEffect(() => {
+    window.addEventListener("online", () => setOnline(true));
+    window.addEventListener("offline", () => setOnline(false));
+  }, []);
+  return setOnline;
+}
+
+const useMousePointer = () => {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e) => {
+    setPosition({ x: e.clientX, y: e.clientY });
+  };
+
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
+
+  return position;
+};
+
 function App() {
+  const mousePointer = useMousePointer();
   const { todos, loading } = useTodo(5);
+  const online = useIsOnline();
   if (loading) {
     return <div>Loadding...</div>;
   }
+
   return (
     <>
       {todos.map((todo, index) => (
         <Track todo={todo} key={index} />
       ))}
+      {online ? "you are online" : " you are offline"}
+      Your mouse position is {mousePointer.x} {mousePointer.y}
     </>
   );
 }
