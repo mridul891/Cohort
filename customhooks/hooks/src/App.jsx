@@ -54,10 +54,48 @@ const useMousePointer = () => {
   return position;
 };
 
+const useDimesnsions = () => {
+  const [dimension, setDimension] = useState({ height: 0, width: 0 });
+
+  const handleDimension = (e) => {
+    setDimension({ x: e.screen.width, y: e.screen.height });
+  };
+
+  useEffect(() => {
+    window.addEventListener("screenchange", handleDimension);
+  });
+  return dimension;
+};
+
+const useInterval = (fn, timeout) => {
+  useEffect(() => {
+    setInterval(fn(), timeout);
+  }, []);
+};
+
+const useDebounsedvalue = (value, timeout) => {
+  const [debounces, setDebounces] = useState(value);
+
+  useEffect(() => {
+    let timeoutvalue = setTimeout(() => {
+      setDebounces(value);
+    }, timeout);
+    return () => {
+      clearTimeout(timeoutvalue);
+    };
+  }, [value, timeout]);
+  return debounces;
+};
+
 function App() {
   const mousePointer = useMousePointer();
   const { todos, loading } = useTodo(5);
   const online = useIsOnline();
+  const [count, setCount] = useState(0);
+  const [value, setValue] = useState("");
+  const debouncedvalue = useDebounsedvalue(value, 1000);
+
+  useInterval(() => setCount((c) => c + 1), 1000);
   if (loading) {
     return <div>Loadding...</div>;
   }
@@ -68,7 +106,13 @@ function App() {
         <Track todo={todo} key={index} />
       ))}
       {online ? "you are online" : " you are offline"}
+      <div></div>
       Your mouse position is {mousePointer.x} {mousePointer.y}
+      <div></div>
+      your Current count is {count}
+      <div></div>
+      <input type="text" onChange={(e) => setValue(e.target.value)} />
+      <div>the and is {debouncedvalue}</div>
     </>
   );
 }
