@@ -119,4 +119,38 @@ function zeroelem(arr: NumberArray) {
     console.log(" the element is ", arr[0]);
 }
 
-zeroelem([6,1, 2, 3, 4])
+zeroelem([6, 1, 2, 3, 4])
+
+
+// enums = are used when we have certain const values 
+
+enum Direction {
+    up, //0 by default this is the values of up and to give it a value we will wirte as Up = "up"
+    down, //1
+    left, //2
+    right //3
+}
+function keyPresses(keyPressed: Direction) {
+    if (keyPressed == Direction.down) {
+        console.log("Down key pressed")
+    }
+}
+
+keyPresses(Direction.up)
+keyPresses(Direction.down)
+console.log(Direction.up)
+
+// Genreics 
+// ques 1 = return first element of the array 
+
+type Input = number | string
+
+function firstEl(arr: Input[]) {
+    return arr[0];
+}
+
+// with generics 
+function firstElem<T>(arr: T[]): T {
+    return arr[0];
+}
+firstElem<number>([1, 2, 3, 4, 5])
