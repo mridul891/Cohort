@@ -25,12 +25,27 @@ const userTable = () => __awaiter(void 0, void 0, void 0, function* () {
 );`);
     console.log(result);
 });
+// This is an insecure way to inject the data in the database any one can change the value and inject its own query
 const insertData = () => __awaiter(void 0, void 0, void 0, function* () {
     yield client.connect();
     const result = yield client.query(`INSERT INTO users (username , email , password) VALUES ('mridul', 'pandey@gmail.com', '12345678');`);
     console.log(result);
 });
-insertData();
+// insertData()
+// Secured Way 
+const secureInsert = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield client.connect();
+        const InsertQuery = `INSERT INTO users (username , email , password) VALUES ($1 , $2, $3);`;
+        const values = [user.username, user.email, user.password];
+        const response = yield client.query(InsertQuery, values);
+        console.log(response);
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+secureInsert({ username: "manu", email: "pandeye891@gmail.com", password: "123sfdd" });
 const getData = () => __awaiter(void 0, void 0, void 0, function* () {
     // await client.connect()
     const result = yield client.query(`SELECT * FROM users;`);
