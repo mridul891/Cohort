@@ -45,10 +45,73 @@ const secureInsert = (user) => __awaiter(void 0, void 0, void 0, function* () {
         console.log(error);
     }
 });
-secureInsert({ username: "manu", email: "pandeye891@gmail.com", password: "123sfdd" });
+// secureInsert({ username: "manu", email: "pandeye891@gmail.com", password: "123sfdd" })
 const getData = () => __awaiter(void 0, void 0, void 0, function* () {
     // await client.connect()
     const result = yield client.query(`SELECT * FROM users;`);
     console.log(result);
 });
-getData();
+// getData()
+const getUser = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield client.connect();
+        const query = 'SELECT * FROM users WHERE email = $1';
+        const value = [email];
+        const result = yield client.query(query, value);
+        if (result.rows.length > 0) {
+            console.log('User Found : ', result.rows[0]);
+            return result.rows[0];
+        }
+        else {
+            console.log('user Not Found');
+            return null;
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+getUser("pandeye891@gmail.com");
+// Realtionship and Transactions 
+const AddreesTable = () => __awaiter(void 0, void 0, void 0, function* () {
+    // await client.connect()
+    const query = `
+    CREATE TABLE addresses (
+    id SERIAL PRIMARY KEY , 
+    user_id INTEGER NOT NULL , 
+    city VARCHAR(100) NOT NULL,
+    country VARCHAR(100) NOT NULL  ,
+    street VARCHAR(255) NOT NULL,
+    pincode VARCHAR(20),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+    `;
+    const result = yield client.query(query);
+    console.log(result);
+});
+// AddreesTable()
+const InsertAddress = (user_id, city, country, street, pincode) => __awaiter(void 0, void 0, void 0, function* () {
+    // await client.connect()
+    const query = 'INSERT INTO addresses (user_id ,city ,country ,street ,pincode ) VALUES ($1 ,$2 ,$3 ,$4,$5);';
+    const value = [user_id, city, country, street, pincode];
+    const result = yield client.query(query, value);
+    console.log(result);
+});
+// InsertAddress(34, 'ghaziabad', 'India', 'Vaishali ', 201010);
+// Joins 
+const datausingJoins = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+    // await client.connect()
+    const query = 'SELECT users.id, users.username, users.email, addresses.city, addresses.country, addresses.street, addresses.pincode FROM users JOIN addresses ON users.id = addresses.user_id WHERE users.id = $1; ';
+    const value = [user_id];
+    const result = yield client.query(query, value);
+    if (result.rows.length > 0) {
+        console.log('User Found : ', result.rows[0]);
+        return result.rows[0];
+    }
+    else {
+        console.log('user Not Found');
+        return null;
+    }
+});
+datausingJoins(34);
