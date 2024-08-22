@@ -120,4 +120,4 @@ const datausingJoins = async (user_id: number) => {
         return null
     }
 }
-datausingJoins(34)
+datausingJoins(56)
