@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="border-b p-4 ">
-          Medium  
+          Medium
         </div>
         {children}
       </body>
