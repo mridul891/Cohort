@@ -2,3 +2,5 @@
 paytm
 node_modules
 medium
+
+.env
